@@ -19,9 +19,10 @@ The system recommends the cheapest suitable box. If multiple suitable boxes have
 - Box weight-capacity validation.
 - Cheapest suitable box recommendation.
 - Smaller-volume tie-breaker for equal-cost boxes.
+- Visual recommendation dashboard.
+- Homepage form to enter an Order ID and view recommendations.
 - Django Admin interface.
-- SmartBox homepage.
-- Automated test suite.
+- Automated test suite with 19 tests.
 
 ## 3. Technology Stack
 
@@ -31,8 +32,9 @@ The system recommends the cheapest suitable box. If multiple suitable boxes have
 | Django | Backend framework |
 | Django REST Framework | REST API development |
 | SQLite | Database |
-| HTML and CSS | Homepage |
-| Postman / DRF Browsable API | API testing |
+| HTML and CSS | Homepage and recommendation dashboard |
+| Django Admin | Data management |
+| DRF Browsable API | API testing |
 
 ## 4. Project Structure
 
@@ -46,9 +48,6 @@ SmartBox/
 │
 ├── shipping/
 │   ├── migrations/
-│   ├── templates/
-│   │   └── shipping/
-│   │       └── home.html
 │   ├── admin.py
 │   ├── api_views.py
 │   ├── models.py
@@ -58,12 +57,29 @@ SmartBox/
 │   ├── urls.py
 │   └── views.py
 │
-├── static/
 ├── templates/
+│   └── shipping/
+│       ├── home.html
+│       └── recommendation.html
+│
+├── static/
+│   ├── css/
+│   ├── images/
+│   └── js/
+│
+├── screenshots/
+│   ├── homepage.png
+│   ├── products-api.png
+│   ├── admin-panel.png
+│   ├── recommendation-page.png
+│   └── tests-passing.png
+│
 ├── manage.py
 ├── requirements.txt
-├── .gitignore
-└── README.md
+├── README.md
+├── AI_USAGE.md
+├── TEST_OUTPUT.md
+└── .gitignore
 ```
 
 ## 5. Installation and Setup
@@ -72,16 +88,14 @@ SmartBox/
 
 - Python installed
 - pip package manager
-- Git (for cloning the repository)
+- Git
 
 ### Step 1: Clone the repository
 
 ```bash
-git clone https://github.com/pranjal3007/SmartBox-E-commerce-Shipping-Box-Recommendation-System?utm_source=chatgpt.com
-cd SmartBox
+git clone https://github.com/pranjal3007/SmartBox-E-commerce-Shipping-Box-Recommendation-System.git
+cd SmartBox-E-commerce-Shipping-Box-Recommendation-System
 ```
-
-Replace the placeholder with the actual repository URL.
 
 ### Step 2: Create a virtual environment
 
@@ -107,23 +121,23 @@ pip install -r requirements.txt
 python manage.py migrate
 ```
 
-### Step 5: Start the development server
+### Step 5: Create an admin account
+
+```bash
+python manage.py createsuperuser
+```
+
+### Step 6: Start the development server
 
 ```bash
 python manage.py runserver
 ```
 
-Open the following URLs:
+Open these URLs:
 
 - Homepage: http://127.0.0.1:8000/
 - API Root: http://127.0.0.1:8000/api/
 - Admin Panel: http://127.0.0.1:8000/admin/
-
-To access Django Admin, create a superuser:
-
-```bash
-python manage.py createsuperuser
-```
 
 ## 6. API Endpoints
 
@@ -144,9 +158,30 @@ python manage.py createsuperuser
 | GET | `/api/orders/{id}/` | Retrieve an order |
 | PATCH | `/api/orders/{id}/` | Update an order |
 | DELETE | `/api/orders/{id}/` | Delete an order |
-| GET | `/api/orders/{id}/recommend-box/` | Recommend a shipping box |
+| GET | `/api/orders/{id}/recommend-box/` | Generate a box recommendation |
 
-## 7. Box Recommendation Algorithm
+## 7. Homepage and Recommendation Workflow
+
+SmartBox provides a homepage where users can enter an existing Order ID to generate a shipping box recommendation.
+
+### Workflow
+
+1. Open the SmartBox homepage.
+2. Enter an existing Order ID.
+3. Click **Get Recommendation**.
+4. The system retrieves the order and its products.
+5. The packing algorithm evaluates available shipping boxes.
+6. The recommendation dashboard displays the selected box, cost, dimensions, order weight, and product placements.
+
+### Visual Recommendation Page
+
+The visual recommendation page is available at:
+
+`/orders/<order_id>/recommendation/`
+
+The homepage uses the recommendation lookup form to navigate to this page.
+
+## 8. Box Recommendation Algorithm
 
 The recommendation process follows these steps:
 
@@ -163,7 +198,7 @@ The recommendation process follows these steps:
 
 The algorithm allows rotation and attempts to pack the complete order into one box.
 
-## 8. Business Rules and Assumptions
+## 9. Business Rules and Assumptions
 
 - All products must fit into one shipping box.
 - Orders cannot be split across multiple boxes.
@@ -178,7 +213,7 @@ The algorithm allows rotation and attempts to pack the complete order into one b
 - Packaging padding is ignored.
 - The recommended box is selected based on the lowest cost, with smaller volume used as a tie-breaker.
 
-## 9. Algorithm Limitations
+## 10. Algorithm Limitations
 
 The packing implementation uses a heuristic approach rather than an exhaustive 3D bin-packing solver.
 
@@ -186,7 +221,7 @@ It checks candidate positions and product orientations but does not guarantee th
 
 Therefore, a failed packing attempt does not necessarily prove that no physically valid arrangement exists.
 
-## 10. Testing
+## 11. Automated Testing
 
 Run the automated tests using:
 
@@ -195,7 +230,7 @@ python manage.py check
 python manage.py test shipping -v 2
 ```
 
-The current test suite contains 17 tests covering:
+The current test suite contains 19 tests covering:
 
 - Product and box validation
 - Order validation
@@ -205,14 +240,41 @@ The current test suite contains 17 tests covering:
 - Box cost selection
 - Volume tie-breaking
 - Placement boundaries and overlap
-- Recommendation API responses
+- Recommendation API success and failure responses
+- Visual recommendation page rendering
+- Invalid order handling (404)
 
-**Latest recorded result:** 17 tests passed.
+**Latest verified test result: 19 tests passed.**
 
-See `TEST_OUTPUT.md` for the actual test execution output.
+See `TEST_OUTPUT.md` for the recorded test execution output.
 
-## 11. Project Status
+## 12. Project Screenshots
 
-The project includes a Django homepage, REST APIs, database models, an admin interface, a 3D packing heuristic, and automated tests.
+### SmartBox Homepage
 
-Further improvements could include a more advanced 3D packing algorithm, packaging padding, authentication, and a dedicated frontend.
+![SmartBox Homepage](screenshots/homepage.png)
+
+### Products API
+
+![Products API](screenshots/products-api.png)
+
+### Django Admin Panel
+
+![Django Admin Panel](screenshots/admin-panel.png)
+
+### Shipping Box Recommendation Dashboard
+
+![Recommendation Dashboard](screenshots/recommendation-page.png)
+
+### Automated Test Results
+
+![19 Passing Tests](screenshots/tests-passing.png)
+
+## 13. Future Improvements
+
+- More advanced 3D packing algorithms.
+- Packaging padding and product protection constraints.
+- User authentication and role-based permissions.
+- Interactive 3D visualization of product placement.
+- Improved frontend experience.
+- Deployment to a cloud platform.

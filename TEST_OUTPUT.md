@@ -1,22 +1,5 @@
-﻿# SmartBox - Test Execution Results
-
-## Django System Check
-```text
-System check identified no issues (0 silenced).
-
-```
-
-## Automated Test Suite
-```text
-python : Creating test database for alias 'default' ('file:memorydb_default?mode=memory&cache=shared')...
-At line:11 char:12
-+ $lines += (python manage.py test shipping -v 2 2>&1 | Out-String)
-+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (Creating test d...che=shared')...:String) [], RemoteException
-    + FullyQualifiedErrorId : NativeCommandError
- 
-
-Found 17 test(s).
+Creating test database for alias 'default' ('file:memorydb_default?mode=memory&cache=shared')...
+Found 19 test(s).
 Operations to perform:
   Synchronize unmigrated apps: messages, rest_framework, staticfiles
   Apply all migrations: admin, auth, contenttypes, sessions, shipping
@@ -44,7 +27,7 @@ Running migrations:
   Applying sessions.0001_initial... OK
   Applying shipping.0001_initial... OK
   Applying shipping.0002_alter_product_height_alter_product_length_and_more... OK
-test_box_negative_cost_rejected (shipping.tests.APIValidationTests.test_box_negative_cost_rejected) ... ok
+  Applying shipping.0003_alter_box_internal_height_alter_box_internal_length_and_more...test_box_negative_cost_rejected (shipping.tests.APIValidationTests.test_box_negative_cost_rejected) ... ok
 test_duplicate_products_rejected (shipping.tests.APIValidationTests.test_duplicate_products_rejected) ... ok
 test_order_invalid_product_id_rejected (shipping.tests.APIValidationTests.test_order_invalid_product_id_rejected) ... ok
 test_order_zero_quantity_rejected (shipping.tests.APIValidationTests.test_order_zero_quantity_rejected) ... ok
@@ -53,8 +36,7 @@ test_product_zero_dimension_rejected (shipping.tests.APIValidationTests.test_pro
 test_cheapest_suitable_box (shipping.tests.PackingAlgorithmTests.test_cheapest_suitable_box) ... ok
 test_empty_order (shipping.tests.PackingAlgorithmTests.test_empty_order) ... ok
 test_multiple_products (shipping.tests.PackingAlgorithmTests.test_multiple_products) ... ok
-test_placements_are_inside_box_and_do_not_overlap (shipping.tests.PackingAlgorithmTests.test_placements_are_inside_box_and_do_not_overlap) 
-... ok
+test_placements_are_inside_box_and_do_not_overlap (shipping.tests.PackingAlgorithmTests.test_placements_are_inside_box_and_do_not_overlap) ... ok
 test_product_rotation (shipping.tests.PackingAlgorithmTests.test_product_rotation) ... ok
 test_product_too_large (shipping.tests.PackingAlgorithmTests.test_product_too_large) ... ok
 test_smaller_volume_tie_breaker (shipping.tests.PackingAlgorithmTests.test_smaller_volume_tie_breaker) ... ok
@@ -62,14 +44,13 @@ test_weight_limit (shipping.tests.PackingAlgorithmTests.test_weight_limit) ... o
 test_recommendation_api_empty_order (shipping.tests.RecommendationAPITests.test_recommendation_api_empty_order) ... ok
 test_recommendation_api_success (shipping.tests.RecommendationAPITests.test_recommendation_api_success) ... ok
 test_recommendation_api_weight_failure (shipping.tests.RecommendationAPITests.test_recommendation_api_weight_failure) ... ok
+test_recommendation_page_loads_successfully (shipping.tests.VisualRecommendationPageTests.test_recommendation_page_loads_successfully) ... ok
+test_recommendation_page_returns_404_for_invalid_order (shipping.tests.VisualRecommendationPageTests.test_recommendation_page_returns_404_for_invalid_order) ... ok
 
 ----------------------------------------------------------------------
-Ran 17 tests in 0.047s
+Ran 19 tests in 0.081s
 
 OK
-Destroying test database for alias 'default' ('file:memorydb_default?mode=memory&cache=shared')...
-
-  Applying shipping.0003_alter_box_internal_height_alter_box_internal_length_and_more... OK
+Destroying test database for alias 'default' ('file:memorydb_default?mode=memory&cache=shared')...
+ OK
 System check identified no issues (0 silenced).
-
-```

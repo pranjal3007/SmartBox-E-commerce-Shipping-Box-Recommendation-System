@@ -176,6 +176,54 @@
         <a href="/api/orders/" class="btn primary">Orders API</a>
         <a href="/admin/" class="btn secondary">Open Admin Panel</a>
     </div>
+    
+<section style="
+    text-align: center;
+    padding: 45px 20px;
+    background: white;
+">
+    <h2 style="color: #172b4d; margin-bottom: 12px;">
+        Find the Best Shipping Box
+    </h2>
+
+    <p style="color: #64748b; margin-bottom: 22px;">
+        Enter your order ID to get the cheapest suitable shipping box.
+    </p>
+
+    {% if lookup_error %}
+        <p style="color: #dc2626; margin-bottom: 15px;">
+            {{ lookup_error }}
+        </p>
+    {% endif %}
+
+    <form method="POST" action="{% url 'recommendation-lookup' %}"
+          style="display: flex; justify-content: center;
+          gap: 12px; flex-wrap: wrap;">
+
+        {% csrf_token %}
+
+        <input
+            type="number"
+            name="order_id"
+            placeholder="Enter Order ID (e.g. 1)"
+            min="1"
+            required
+            style="padding: 14px; width: 260px;
+            border: 1px solid #cbd5e1; border-radius: 8px;
+            font-size: 16px;"
+        >
+
+        <button
+            type="submit"
+            style="background: #2864e8; color: white;
+            padding: 14px 25px; border: none;
+            border-radius: 8px; font-size: 16px;
+            font-weight: bold; cursor: pointer;">
+            Get Recommendation →
+        </button>
+
+    </form>
+</section>
 
 </section>
 

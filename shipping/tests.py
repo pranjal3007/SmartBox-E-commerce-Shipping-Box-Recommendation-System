@@ -1,6 +1,7 @@
 
 from django.test import TestCase
 from rest_framework.test import APITestCase
+from django.urls import reverse
 
 from .models import Product, Box, Order, OrderItem
 
@@ -408,3 +409,62 @@ class APIValidationTests(APITestCase):
         )
 
         self.assertEqual(response.status_code, 400)
+
+class VisualRecommendationPageTests(TestCase):
+
+    def setUp(self):
+        # Create a test product.
+        self.product = Product.objects.create(
+            name="Test Laptop",
+            length=30,
+            width=20,
+            height=5,
+            weight=2
+        )
+
+        # Create a suitable shipping box.
+        Box.objects.create(
+            name="Test Medium",
+            internal_length=45,
+            internal_width=30,
+            internal_height=15,
+            max_weight=5,
+            cost=20
+        )
+
+        # Create an order.
+        self.order = Order.objects.create(
+            order_number="VISUAL-TEST-001"
+        )
+
+        OrderItem.objects.create(
+            order=self.order,
+            product=self.product,
+            quantity=1
+        )
+
+    def test_recommendation_page_loads_successfully(self):
+        url = reverse(
+            "order-recommendation",
+            kwargs={"order_id": self.order.id}
+        )
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response,
+            "shipping/recommendation.html"
+        )
+        self.assertContains(response, "Suitable shipping box found!")
+        self.assertContains(response, "Test Medium")
+
+    def test_recommendation_page_returns_404_for_invalid_order(self):
+        url = reverse(
+            "order-recommendation",
+            kwargs={"order_id": 999999}
+        )
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 404)
