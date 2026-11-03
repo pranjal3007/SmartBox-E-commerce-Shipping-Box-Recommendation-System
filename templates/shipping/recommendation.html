@@ -1,0 +1,287 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBox | Box Recommendation</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f6fc;
+            color: #172b4d;
+        }
+
+        nav {
+            background: white;
+            padding: 20px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        nav h2 {
+            color: #2864e8;
+            font-size: 28px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #26364d;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 55px auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .success {
+            background: #ecfdf3;
+            border: 1px solid #a7f3c0;
+            color: #087443;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .success h2 {
+            margin-bottom: 12px;
+        }
+
+        .failure {
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            color: #be123c;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .failure h2 {
+            margin-bottom: 12px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+            margin: 25px 0;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+        }
+
+        .card h3 {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            font-size: 23px;
+            font-weight: bold;
+        }
+
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 25px;
+        }
+
+        .section h2 {
+            margin-bottom: 18px;
+        }
+
+        .placement {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .placement:last-child {
+            border-bottom: none;
+        }
+
+        .rejected {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .button {
+            display: inline-block;
+            background: #2864e8;
+            color: white;
+            padding: 14px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 25px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 35px 15px;
+            color: #64748b;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            nav {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <h2>SmartBox 📦</h2>
+    <a href="/">Back to Home</a>
+</nav>
+
+<div class="container">
+
+    <h1>Shipping Box Recommendation</h1>
+
+    <p class="subtitle">
+        Recommendation results for Order #{{ order.id }}
+    </p>
+
+    {% if result.success %}
+
+        <div class="success">
+            <h2>✓ Suitable shipping box found!</h2>
+            <p>Recommended Box: <strong>{{ result.recommended_box.name }}</strong></p>
+            <p>Estimated Box Cost: ₹{{ result.recommended_box.cost }}</p>
+        </div>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>Box Dimensions</h3>
+                <p>
+                    {{ result.recommended_box.dimensions.length }} ×
+                    {{ result.recommended_box.dimensions.width }} ×
+                    {{ result.recommended_box.dimensions.height }}
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>Maximum Weight</h3>
+                <p>{{ result.recommended_box.max_weight }} kg</p>
+            </div>
+
+            <div class="card">
+                <h3>Order Weight</h3>
+                <p>{{ result.order_summary.total_weight }} kg</p>
+            </div>
+
+            <div class="card">
+                <h3>Total Products</h3>
+                <p>{{ result.order_summary.total_products }}</p>
+            </div>
+
+        </div>
+
+        <div class="section">
+            <h2>Product Placement Details</h2>
+
+            {% for item in result.placements %}
+                <div class="placement">
+                    <strong>{{ item.name }}</strong>
+                    <p>Position: {{ item.position }}</p>
+                    <p>Dimensions: {{ item.dimensions }}</p>
+                </div>
+            {% empty %}
+                <p>No placement details available.</p>
+            {% endfor %}
+        </div>
+
+        {% if result.rejected_boxes %}
+            <div class="section">
+                <h2>Other Boxes Considered</h2>
+
+                {% for box in result.rejected_boxes %}
+                    <div class="rejected">
+                        <strong>{{ box.box }}</strong>
+                        <p>{{ box.reason }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    {% else %}
+
+        <div class="failure">
+            <h2>No suitable shipping box found</h2>
+            <p>{{ result.message }}</p>
+        </div>
+
+        {% if result.order_summary %}
+            <div class="cards">
+                <div class="card">
+                    <h3>Order Weight</h3>
+                    <p>{{ result.order_summary.total_weight }} kg</p>
+                </div>
+
+                <div class="card">
+                    <h3>Total Products</h3>
+                    <p>{{ result.order_summary.total_products }}</p>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if result.rejected_boxes %}
+            <div class="section">
+                <h2>Why Boxes Were Rejected</h2>
+
+                {% for box in result.rejected_boxes %}
+                    <div class="rejected">
+                        <strong>{{ box.box }}</strong>
+                        <p>{{ box.reason }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+    {% endif %}
+
+    <a href="/" class="button">← Back to Homepage</a>
+
+</div>
+
+<footer>
+    SmartBox | E-commerce Shipping Box Recommendation System
+</footer>
+
+</body>
+</html>
